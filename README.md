@@ -2,10 +2,16 @@
 
 Here are all the "Service Mesh with Istio" course files.
 
-## Links
+## Installation guides
 - [k3d / Getting Started](https://k3d.io/)
 - [Istio / Getting Started](https://istio.io/latest/docs/setup/getting-started/)
 - [Fortio / Getting Started](https://github.com/fortio/fortio)
+
+## Create a cluster
+You can create a cluster in the cloud, but, for these experiments, i created a local cluster with K3d running the command:
+```sh
+k3d cluster create -p "8000:30000@loadbalancer" --agents 2
+```
 
 ## How to install Istio in cluster?
 ```sh
@@ -53,11 +59,34 @@ kubectl apply -f fault-injection.yaml
 ```
 You can observe them in Kiali dashboard. 
 
-## How to create an istio ingress gateway?
+## How to create an istio ingress gateway (if you have a cloud cluster)?
 
 Just run the command:
 ```sh
 kubectl apply -f gateway.yaml
+```
+## How to create an istio ingress gateway (if you have a local cluster)?
+
+When you access localhost:8000, you'll be redirected to cluster port 30000, this way, you can access the LoadBalancer of `deployment.yaml`.
+
+But now, we wanna access localhost:8000 and get redirected to the istio-ingressgateway. First, open `deployment.yaml` and edit the LoadBalancer nodePort to 30001 to let port 30000 free.
+
+### Discover the NodePort of **istio-ingressgateway**
+Run `kubectl get svc -n istio-system` and get the response:
+
+```
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)
+istio-ingressgateway   LoadBalancer   10.43.31.68     <pending>     15021:30847/TCP,80:31784(<---- this one)/TCP
+```
+
+### Edit the **istio-ingressgateway** service NodePort
+
+```sh
+kubectl edit svc istio-ingressgateway -n istio-system
+# Search for:
+# - name: http2
+#   nodePort: 31784 # Change 31784 to 30000 and save
+#   port: 80
 ```
 
 ## How to create istio gateway based on subdomains?
