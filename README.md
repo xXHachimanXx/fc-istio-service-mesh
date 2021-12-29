@@ -1,6 +1,6 @@
-# fc-istio-service-mesh
+# Service Mesh with Istio
 
-Here are all the "Service Mesh with Istio" course files.
+Here are all the "Service Mesh with Istio" course files. 
 
 ## Installation guides
 - [k3d / Getting Started](https://k3d.io/)
