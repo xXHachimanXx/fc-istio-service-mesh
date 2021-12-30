@@ -17,6 +17,12 @@ k3d cluster create -p "8000:30000@loadbalancer" --agents 2
 ```sh
 istioctl install -y
 ```
+## Inject sidecar proxy
+To enable the sidecar proxy injection you need to run:
+```sh
+kubectl label namespace default istio-injection=enabled
+```
+This command will enable the sidecar proxy injection in every pod created in namespace with `default` label.
 
 ## Apply the deployment
 ```sh
